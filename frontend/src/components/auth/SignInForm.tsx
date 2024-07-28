@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { login } from "@/actions/auth";
 
 export default function SignInForm() {
     const router = useRouter();
@@ -37,9 +36,8 @@ export default function SignInForm() {
 
     function onSubmit(values: z.infer<typeof signInSchema>) {
         startTransition(async () => {
-            const res = await login(values);
-
-            console.log(res);
+            // const res = await login(values);
+            // console.log(res);
         });
     }
     return (

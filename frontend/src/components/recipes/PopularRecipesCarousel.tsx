@@ -14,16 +14,16 @@ import useSWR from "swr";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function PopularRecipesCarousel() {
-    const { data, error, isLoading } = useSWR(
-        "http://127.0.0.1:8001/api/recipe/",
-        fetcher
-    );
+    // const { data, error, isLoading } = useSWR(
+    //     "http://127.0.0.1:8001/api/recipe/",
+    //     fetcher
+    // );
 
-    if (isLoading) return <div>Loading...</div>;
+    // if (isLoading) return <div>Loading...</div>;
 
-    if (error) return <div>Error fetching data</div>;
+    // if (error) return <div>Error fetching data</div>;
 
-    console.log(data);
+    // console.log(data);
 
     const popularRecipes = recipies.filter((recipe) => recipe.featured);
     return (

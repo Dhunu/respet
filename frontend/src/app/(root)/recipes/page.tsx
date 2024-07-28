@@ -2,10 +2,10 @@ import PopularRecipesCarousel from "@/components/recipes/PopularRecipesCarousel"
 import Image from "next/image";
 
 export default async function RecipesPage() {
-    const res = await fetch("http://127.0.0.1:8001/api/hello");
-    const data = await res.json();
+    // const res = await fetch("http://127.0.0.1:8001/api/hello");
+    // const data = await res.json();
 
-    console.log(data);
+    // console.log(data);
 
     return (
         <div className="w-full h-full pt-32">
