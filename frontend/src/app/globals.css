@@ -69,10 +69,14 @@
 }
 
 .rti--container {
-    @apply bg-background h-10 border-none focus-within:ring-1 focus-within:ring-offset-0 focus-within:ring-primary py-0 !important;
+    @apply bg-background border-none focus-within:ring-0 py-2 !important;
     --rti-main: "#914F1E" !important;
 }
 
 .rti--tag {
     @apply bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs font-semibold !important;
+}
+
+.rti--tag button {
+    @apply text-primary-foreground !important;
 }

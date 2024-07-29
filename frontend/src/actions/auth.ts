@@ -1,6 +1,7 @@
-// "use server";
+"use server";
 
-// import { cookies } from "next/headers";
+import { verify } from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 // export async function login(values: { username: string; password: string }) {
 //     const { username, password } = values;
@@ -41,3 +42,53 @@
 //         },
 //     };
 // }
+
+export async function authStatus() {
+    const cookie = cookies().get("ecowiser");
+
+    if (!cookie) {
+        return {
+            status: 401,
+            body: {
+                success: false,
+                message: "You are not logged in",
+            },
+        };
+    }
+
+    const userData = verify(cookie.value, String(process.env.JWT_SECRET));
+
+    const { name, email, exp } = userData as {
+        name: string;
+        email: string;
+        exp: number;
+    };
+
+    const isExpired = Date.now() >= exp * 1000;
+
+    if (isExpired) {
+        cookies().set("ecowiser", "", {
+            maxAge: 0,
+        });
+
+        return {
+            status: 401,
+            body: {
+                success: false,
+                message: "Session expired",
+            },
+        };
+    }
+
+    return {
+        status: 200,
+        body: {
+            success: true,
+            message: "You are logged in",
+            user: {
+                name,
+                email,
+            },
+        },
+    };
+}

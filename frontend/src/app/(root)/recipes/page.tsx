@@ -2,10 +2,17 @@ import PopularRecipesCarousel from "@/components/recipes/PopularRecipesCarousel"
 import Image from "next/image";
 
 export default async function RecipesPage() {
-    // const res = await fetch("http://127.0.0.1:8001/api/hello");
-    // const data = await res.json();
+    const recipes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/recipes`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
 
-    // console.log(data);
+    const data = await recipes.json();
 
     return (
         <div className="w-full h-full pt-32">
@@ -51,7 +58,7 @@ export default async function RecipesPage() {
                         className="absolute sm:-bottom-2 right-5 sm:right-10  w-[120px] sm:w-[180px]"
                     />
                 </h2>
-                <PopularRecipesCarousel />
+                <PopularRecipesCarousel recipes={data.recipes}/>
             </div>
             <div className="mt-32">
                 <h2 className="text-2xl sm:text-4xl px-5 sm:px-10 mb-10 font-semibold text-primary w-[330px] sm:w-[500px] relative">
@@ -64,7 +71,7 @@ export default async function RecipesPage() {
                         className="absolute sm:-bottom-2 right-5 sm:right-10  w-[120px] sm:w-[180px]"
                     />
                 </h2>
-                <PopularRecipesCarousel />
+                <PopularRecipesCarousel recipes={data.recipes}/>
             </div>
             <div className="mt-32 mb-20">
                 <h2 className="text-2xl sm:text-4xl px-5 sm:px-10 mb-10 font-semibold text-primary w-[330px] sm:w-[530px] relative">
@@ -77,7 +84,7 @@ export default async function RecipesPage() {
                         className="absolute sm:-bottom-2 right-5 sm:right-10  w-[120px] sm:w-[180px]"
                     />
                 </h2>
-                <PopularRecipesCarousel />
+                <PopularRecipesCarousel recipes={data.recipes}/>
             </div>
         </div>
     );

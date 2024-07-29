@@ -21,23 +21,39 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function SignInForm() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const form = useForm<z.infer<typeof signInSchema>>({
         resolver: zodResolver(signInSchema),
         defaultValues: {
-            username: "",
+            email: "",
             password: "",
         },
     });
 
     function onSubmit(values: z.infer<typeof signInSchema>) {
         startTransition(async () => {
-            // const res = await login(values);
-            // console.log(res);
+            const response = await fetch("/api/auth/sign-in", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                toast.error(data.message);
+            } else {
+                setErrorMessage(null);
+                router.push("/");
+            }
         });
     }
     return (
@@ -48,10 +64,10 @@ export default function SignInForm() {
             >
                 <FormField
                     control={form.control}
-                    name="username"
+                    name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
                                 <Input
                                     {...field}
@@ -108,7 +124,6 @@ export default function SignInForm() {
                                     )}
                                 </div>
                             </FormControl>
-
                             <FormMessage />
                         </FormItem>
                     )}
@@ -120,6 +135,11 @@ export default function SignInForm() {
                         "Sign In"
                     )}
                 </Button>
+                {errorMessage && (
+                    <FormDescription className="text-red-500">
+                        {errorMessage}
+                    </FormDescription>
+                )}
             </form>
             <div className="w-full mt-5">
                 <p className="text-center text-muted-foreground text-sm">

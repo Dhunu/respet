@@ -25,7 +25,7 @@ export const signUpSchema = z
     });
 
 export const signInSchema = z.object({
-    username: z.string(),
+    email: z.string().email("Invalid email address"),
     password: z.string(),
 });
 
@@ -61,9 +61,9 @@ export const addRecipeSchema = z.object({
     description: z
         .string()
         .min(3, { message: "Description must be at least 3 characters long" }),
-    cookingTime: z.number().int().positive(),
-    prepTime: z.number().int().positive(),
-    servings: z.number().int().positive(),
+    cookingTime: z.coerce.number().int().positive(),
+    prepTime: z.coerce.number().int().positive(),
+    servings: z.coerce.number().int().positive(),
     ingredients: z.array(
         z.string().min(3, {
             message: "Ingredient must be at least 3 characters long",

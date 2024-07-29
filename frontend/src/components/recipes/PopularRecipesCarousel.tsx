@@ -2,30 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 import { categories, recipies } from "@/constants";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
-import useSWR from "swr";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-export default function PopularRecipesCarousel() {
-    // const { data, error, isLoading } = useSWR(
-    //     "http://127.0.0.1:8001/api/recipe/",
-    //     fetcher
-    // );
-
-    // if (isLoading) return <div>Loading...</div>;
-
-    // if (error) return <div>Error fetching data</div>;
-
-    // console.log(data);
-
-    const popularRecipes = recipies.filter((recipe) => recipe.featured);
+export default function PopularRecipesCarousel({
+    recipes,
+}: {
+    recipes: Recipe[];
+}) {
     return (
         <Carousel
             opts={{
@@ -35,9 +24,10 @@ export default function PopularRecipesCarousel() {
             orientation="horizontal"
         >
             <CarouselContent>
-                {popularRecipes.map((recipe, index) => {
+                {recipes.map((recipe, index) => {
                     const fullStars = Math.floor(recipe.rating);
                     const halfStar = recipe.rating % 1 > 0.5;
+                    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
                     return (
                         <CarouselItem
                             key={recipe.id}
@@ -48,12 +38,12 @@ export default function PopularRecipesCarousel() {
                                     "mr-5 md:mr-10"
                             )}
                         >
-                            <Link href={`/category/${recipe.id}`}>
+                            <Link href={`/recipes/${recipe.id}`}>
                                 <Card className="aspect-[2.8/4] bg-transparent ">
                                     <CardContent className="w-full h-full flex flex-col relative justify-end rounded-lg shadow-lg">
                                         <Image
                                             src={recipe.image}
-                                            alt={recipe.name}
+                                            alt={recipe.title}
                                             width={500}
                                             height={1000}
                                             className="absolute top-0 left-0 w-full h-full object-cover -z-10 rounded-lg"
@@ -63,7 +53,7 @@ export default function PopularRecipesCarousel() {
                                         <div className="w-full z-10 pb-6 lg:pb-10 pl-2 flex flex-col">
                                             <div className="flex justify-between items-end">
                                                 <h3 className="text-2xl lg:text-3xl font-bold flex items-center text-[#F7DCB9]">
-                                                    {recipe.name}
+                                                    {recipe.title}
                                                 </h3>
 
                                                 <Badge className="h-10 border border-secondary">
@@ -77,6 +67,9 @@ export default function PopularRecipesCarousel() {
                                                     )}
                                                     {halfStar && (
                                                         <FaStarHalfAlt className="text-secondary w-4 h-4" />
+                                                    )}
+                                                    {Array(emptyStars).fill(
+                                                        <FaRegStar className="text-secondary w-4 h-4" />
                                                     )}
                                                 </div>
                                                 <span className="font-semibold text-sm text-secondary">

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { Toaster } from "react-hot-toast";
+
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -47,6 +49,7 @@ export default function RootLayout({
                     poppins.variable
                 )}
             >
+                <Toaster />
                 {children}
             </body>
         </html>

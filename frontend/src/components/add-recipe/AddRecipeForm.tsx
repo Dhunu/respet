@@ -4,25 +4,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
+import Image from "next/image";
+import { TagsInput } from "react-tag-input-component";
 
 import { addRecipeSchema } from "@/schema";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import { Textarea } from "../ui/textarea";
-import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
-import { TagsInput } from "react-tag-input-component";
+import DropzoneConponent from "../DropzoneConponent";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-export default function AddRecipeForm() {
-    const [ingredient, setIngredient] = useState("");
+export default function AddRecipeForm({ email }: { email: string }) {
+    const router = useRouter();
     const [step, setStep] = useState("");
 
     const form = useForm<z.infer<typeof addRecipeSchema>>({
@@ -39,25 +42,6 @@ export default function AddRecipeForm() {
         },
     });
 
-    async function addIngredient() {
-        if (ingredient.length >= 3) {
-            form.setValue("ingredients", [
-                ...form.getValues("ingredients"),
-                ingredient,
-            ]);
-            setIngredient("");
-        }
-    }
-
-    async function deleteIngredient(i: number) {
-        form.setValue(
-            "ingredients",
-            form
-                .getValues("ingredients")
-                .filter((ingredient, index) => index !== i)
-        );
-    }
-
     async function addStep() {
         if (step.length >= 3) {
             form.setValue("steps", [...form.getValues("steps"), step]);
@@ -72,12 +56,59 @@ export default function AddRecipeForm() {
         );
     }
 
-    async function onSumbit(data: z.infer<typeof addRecipeSchema>) {
+    async function onSumbit(values: z.infer<typeof addRecipeSchema>) {
+        console.log(values);
+
+        const res = await fetch("/api/recipe", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+        });
+
+        const data = await res.json();
+
         console.log(data);
+
+        if (res.status === 201) {
+            toast.success("Recipe added successfully!");
+            form.reset();
+            router.push(`/recipes/${data.recipe.id}`);
+        }
     }
     return (
         <Form {...form}>
             <form className="space-y-6" onSubmit={form.handleSubmit(onSumbit)}>
+                {form.getValues("imageUrl") ? (
+                    <div className="w-full h-52">
+                        <Image
+                            src={form.getValues("imageUrl")}
+                            height={280}
+                            width={500}
+                            className="object-contain w-full h-full"
+                            alt={form.getValues("title") || "Recipe image"}
+                        />
+                    </div>
+                ) : (
+                    <FormField
+                        control={form.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Upload Image</FormLabel>
+                                <FormControl>
+                                    <DropzoneConponent
+                                        email={email}
+                                        onChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
+
                 <FormField
                     control={form.control}
                     name="title"
@@ -91,6 +122,7 @@ export default function AddRecipeForm() {
                                     className="border-none"
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -107,6 +139,7 @@ export default function AddRecipeForm() {
                                     placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -130,6 +163,7 @@ export default function AddRecipeForm() {
                                         </div>
                                     </div>
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -152,6 +186,7 @@ export default function AddRecipeForm() {
                                         </div>
                                     </div>
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -168,6 +203,7 @@ export default function AddRecipeForm() {
                                         className="border-none"
                                     />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -191,6 +227,7 @@ export default function AddRecipeForm() {
                                     }}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -244,6 +281,7 @@ export default function AddRecipeForm() {
                                     </div>
                                 </div>
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
