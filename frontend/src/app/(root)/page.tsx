@@ -1,7 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import useSWR from "swr";
-
 import CategoryCarousel from "@/components/home/CategoryCarousel";
 import { Button } from "@/components/ui/button";
 
