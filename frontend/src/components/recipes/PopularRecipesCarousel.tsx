@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
-import { categories, recipies } from "@/constants";
+import { categories } from "@/constants";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";

@@ -1,4 +1,4 @@
-import { categories, recipies } from "@/constants";
+import { categories } from "@/constants";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
